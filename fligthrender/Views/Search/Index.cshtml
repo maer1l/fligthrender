@@ -30,9 +30,9 @@ else
                     <td>@Html.DisplayFor(modelItem => item.Year)</td>
                     <td>@Html.DisplayFor(modelItem => item.Brand.Name)</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.PlaneId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.PlaneId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.PlaneId">Delete</a>
+                        <a asp-action="Edit" asp-controller="Planes" asp-route-id="@item.PlaneId">Edit</a> |
+                        <a asp-action="Details" asp-controller="Planes" asp-route-id="@item.PlaneId">Details</a> |
+                        <a asp-action="Delete" asp-controller="Planes" asp-route-id="@item.PlaneId">Delete</a>
                     </td>
                 </tr>
             }
@@ -64,9 +64,9 @@ else
                     <td>@Html.DisplayFor(modelItem => item.Description)</td>
                     <td>@Html.DisplayFor(modelItem => item.Address)</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.BrandId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.BrandId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.BrandId">Delete</a>
+                        <a asp-action="Edit" asp-controller="Manufacturers" asp-route-id="@item.BrandId">Edit</a> |
+                        <a asp-action="Details" asp-controller="Manufacturers" asp-route-id="@item.BrandId">Details</a> |
+                        <a asp-action="Delete" asp-controller="Manufacturers" asp-route-id="@item.BrandId">Delete</a>
                     </td>
                 </tr>
             }
