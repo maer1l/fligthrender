@@ -6,6 +6,11 @@
 
 <h1>Index</h1>
 
+@if(TempData["AlertMessage"] != null)
+{
+    <div style="color:red">@Html.Raw(TempData["AlertMessage"])</div>
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
