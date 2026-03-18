@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using fligthrender.Data;
+using fligthrender.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using fligthrender.Data;
-using fligthrender.Models;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace fligthrender.Controllers
 {
@@ -152,6 +153,28 @@ namespace fligthrender.Controllers
         private bool ManufacturerExists(int id)
         {
             return _context.Manufacturers.Any(e => e.BrandId == id);
+        }
+
+        [HttpGet]
+        [HttpPost]
+        public async Task<IActionResult> SearchWithAjax(string request)
+        {
+            IEnumerable<Manufacturer> filteredmanufacturers = null;
+            var brands = await _context.Manufacturers.ToListAsync();
+            if (!request.IsNullOrEmpty())
+            {
+                request = request.Trim();
+
+                filteredmanufacturers = from p in brands where p.Name == request select p;
+                filteredmanufacturers = filteredmanufacturers.Union(from p in brands where p.Description == request select p);
+                filteredmanufacturers = filteredmanufacturers.Union(from p in brands where p.Address == request select p);
+            }
+            else
+            {
+                filteredmanufacturers = brands;
+            }
+
+            return PartialView(filteredmanufacturers);
         }
     }
 }
