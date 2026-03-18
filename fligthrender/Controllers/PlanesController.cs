@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using fligthrender.Data;
+using fligthrender.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using fligthrender.Data;
-using fligthrender.Models;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Intrinsics.Arm;
+using System.Threading.Tasks;
 
 namespace fligthrender.Controllers
 {
@@ -159,6 +161,48 @@ namespace fligthrender.Controllers
         private bool PlaneExists(int id)
         {
             return _context.Planes.Any(e => e.PlaneId == id);
+        }
+
+        [HttpGet]
+        [HttpPost]
+        public async Task<IActionResult> SearchWithAjax(string request)
+        {
+            IEnumerable<Plane> filteredplanes = null;
+            var planes = await _context.Planes.ToListAsync();
+            var brands = await _context.Manufacturers.ToListAsync();
+            if (!request.IsNullOrEmpty())
+            {
+                request = request.Trim();
+                decimal o = 0;
+                if(decimal.TryParse(request, out o))
+                {
+                    filteredplanes = from p in planes where p.Price == o select p;
+                    filteredplanes = filteredplanes.Union(from p in planes where p.Weight == decimal.ToDouble(o) select p);
+                    filteredplanes = filteredplanes.Union(from p in planes where p.Speed == decimal.ToInt32(o) select p);
+                    filteredplanes = filteredplanes.Union(from p in planes where p.Speed == decimal.ToInt32(o) select p);
+                    filteredplanes = filteredplanes.Union(from p in planes where p.Year == decimal.ToInt32(o) select p);
+                    filteredplanes = filteredplanes.Union(from p in planes where p.Model == request select p);
+                }
+                else
+                {
+                    filteredplanes = from p in planes where p.Model == request select p;
+                    try
+                    {
+                        int id = brands.SingleOrDefault(m => m.Name == request).BrandId;
+                        filteredplanes = filteredplanes.Union(from p in planes where p.BrandId == id select p);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                filteredplanes = planes;
+            }
+
+            return PartialView(filteredplanes);
         }
     }
 }
