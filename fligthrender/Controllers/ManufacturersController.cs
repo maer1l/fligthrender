@@ -1,13 +1,12 @@
-﻿using fligthrender.Data;
-using fligthrender.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using fligthrender.Data;
+using fligthrender.Models;
 
 namespace fligthrender.Controllers
 {
@@ -155,26 +154,37 @@ namespace fligthrender.Controllers
             return _context.Manufacturers.Any(e => e.BrandId == id);
         }
 
-        [HttpGet]
-        [HttpPost]
-        public async Task<IActionResult> SearchWithAjax(string request)
+        [Route("Manufacturers/name/{name}")]
+        public ActionResult ManufacturerByName(string name)
         {
-            IEnumerable<Manufacturer> filteredmanufacturers = null;
-            var brands = await _context.Manufacturers.ToListAsync();
-            if (!request.IsNullOrEmpty())
-            {
-                request = request.Trim();
+            var filtered = _context.Manufacturers
+            .Include(m => m.Planes)
+            .Where(p => p.Name.Contains(name))
+            .ToList();
 
-                filteredmanufacturers = from p in brands where p.Name == request select p;
-                filteredmanufacturers = filteredmanufacturers.Union(from p in brands where p.Description == request select p);
-                filteredmanufacturers = filteredmanufacturers.Union(from p in brands where p.Address == request select p);
-            }
-            else
-            {
-                filteredmanufacturers = brands;
-            }
+            return View("Index", filtered);
+        }
 
-            return PartialView(filteredmanufacturers);
+        [Route("Manufacturers/description/{description}")]
+        public ActionResult ManufacturerByDescription(string description)
+        {
+            var filtered = _context.Manufacturers
+            .Include(m => m.Planes)
+            .Where(p => p.Description.Contains(description))
+            .ToList();
+
+            return View("Index", filtered);
+        }
+
+        [Route("Manufacturers/address/{address}")]
+        public ActionResult ManufacturerByAddress(string address)
+        {
+            var filtered = _context.Manufacturers
+            .Include(m => m.Planes)
+            .Where(p => p.Address.Contains(address))
+            .ToList();
+
+            return View("Index", filtered);
         }
     }
 }
