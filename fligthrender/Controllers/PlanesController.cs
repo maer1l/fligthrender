@@ -48,7 +48,7 @@ namespace fligthrender.Controllers
         // GET: Planes/Create
         public IActionResult Create()
         {
-            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "BrandId");
+            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace fligthrender.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "BrandId", plane.BrandId);
+            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name", plane.BrandId);
             return View(plane);
         }
 
@@ -82,7 +82,7 @@ namespace fligthrender.Controllers
             {
                 return NotFound();
             }
-            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "BrandId", plane.BrandId);
+            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name", plane.BrandId);
             return View(plane);
         }
 
@@ -118,7 +118,7 @@ namespace fligthrender.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "BrandId", plane.BrandId);
+            ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name", plane.BrandId);
             return View(plane);
         }
 
