@@ -25,6 +25,7 @@ namespace fligthrender.Controllers
             SearchPlanesManufacturer result = new SearchPlanesManufacturer();
 
             var planes = _context.Planes
+             .Include(p => p.Brand)
              .Where(c => c.Model.Contains(query)
              || c.Brand.Name.Contains(query)
              || c.Year.ToString().Contains(query))
