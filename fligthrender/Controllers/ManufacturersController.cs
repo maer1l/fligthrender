@@ -2,6 +2,7 @@
 using fligthrender.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -140,13 +141,29 @@ namespace fligthrender.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var resultParam = new SqlParameter
+            {
+                ParameterName = "@Result",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.Output
+            };
+
             var manufacturer = await _context.Manufacturers.FindAsync(id);
-            if (manufacturer != null)
+            await _context.Database.ExecuteSqlRawAsync("EXEC CheckManufacturer @brand_id = {0}, @Result = @Result OUTPUT", id, resultParam);
+
+            int result = (int)resultParam.Value;
+
+            if (result == 1)
+            {
+                TempData["AlertMessage"] = "Нельзя удалить бренд, у него есть связанные самолеты!";
+                return RedirectToAction(nameof(Index));
+            }
+            else
             {
                 _context.Manufacturers.Remove(manufacturer);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
