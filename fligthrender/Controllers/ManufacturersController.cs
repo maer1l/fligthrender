@@ -155,6 +155,39 @@ namespace fligthrender.Controllers
             return _context.Manufacturers.Any(e => e.BrandId == id);
         }
 
+        [Route("Manufacturers/name/{name}")]
+        public ActionResult ManufacturerByName(string name)
+        {
+            var filtered = _context.Manufacturers
+            .Include(m => m.Planes)
+            .Where(p => p.Name.Contains(name))
+            .ToList();
+
+            return View("Index", filtered);
+        }
+
+        [Route("Manufacturers/description/{description}")]
+        public ActionResult ManufacturerByDescription(string description)
+        {
+            var filtered = _context.Manufacturers
+            .Include(m => m.Planes)
+            .Where(p => p.Description.Contains(description))
+            .ToList();
+
+            return View("Index", filtered);
+        }
+
+        [Route("Manufacturers/address/{address}")]
+        public ActionResult ManufacturerByAddress(string address)
+        {
+            var filtered = _context.Manufacturers
+            .Include(m => m.Planes)
+            .Where(p => p.Address.Contains(address))
+            .ToList();
+
+            return View("Index", filtered);
+        }
+
         [HttpGet]
         [HttpPost]
         public async Task<IActionResult> SearchWithAjax(string request)
