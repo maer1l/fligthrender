@@ -222,47 +222,5 @@ namespace fligthrender.Controllers
             var filteredplanes = from p in planes where p.BrandId == id select p;
             return View("Index", filteredplanes);
         }
-
-        [HttpGet]
-        [HttpPost]
-        public async Task<IActionResult> SearchWithAjax(string request)
-        {
-            IEnumerable<Plane> filteredplanes = null;
-            var planes = await _context.Planes.ToListAsync();
-            var brands = await _context.Manufacturers.ToListAsync();
-            if (!request.IsNullOrEmpty())
-            {
-                request = request.Trim();
-                decimal o = 0;
-                if(decimal.TryParse(request, out o))
-                {
-                    filteredplanes = from p in planes where p.Price == o select p;
-                    filteredplanes = filteredplanes.Union(from p in planes where p.Weight == decimal.ToDouble(o) select p);
-                    filteredplanes = filteredplanes.Union(from p in planes where p.Speed == decimal.ToInt32(o) select p);
-                    filteredplanes = filteredplanes.Union(from p in planes where p.Speed == decimal.ToInt32(o) select p);
-                    filteredplanes = filteredplanes.Union(from p in planes where p.Year == decimal.ToInt32(o) select p);
-                    filteredplanes = filteredplanes.Union(from p in planes where p.Model == request select p);
-                }
-                else
-                {
-                    filteredplanes = from p in planes where p.Model == request select p;
-                    try
-                    {
-                        int id = brands.SingleOrDefault(m => m.Name == request).BrandId;
-                        filteredplanes = filteredplanes.Union(from p in planes where p.BrandId == id select p);
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-            else
-            {
-                filteredplanes = planes;
-            }
-
-            return PartialView(filteredplanes);
-        }
     }
 }
