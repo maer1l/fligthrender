@@ -4,57 +4,59 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container tm-mt-big">
+    <div class="tm-block tm-block-product-categories">
+        <h1 class="tm-block-title text-center">@ViewData["Title"]</h1>
 
-@if(TempData["AlertMessage"] != null)
-{
-    <div style="color:red">@Html.Raw(TempData["AlertMessage"])</div>
-}
+        <!-- Сообщение об ошибке -->
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div class="tm-small text-center" style="color:red">
+                @Html.Raw(TempData["AlertMessage"])
+            </div>
+        }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+        <!-- Кнопка создания -->
+        <p class="tm-mt-small">
+            <a asp-action="Create" class="btn btn-primary">Создать нового</a>
+        </p>
 
-<form data-ajax="true" data-ajax-method="post" data-ajax-url="/Manufacturers/SearchWithAjax" data-ajax-update="#results">
-    <input type="text" name="request" placeholder="поиск..." />
-    <input type="submit" value="🔍" />
-</form>
+        <!-- Поиск -->
+        <form data-ajax="true" data-ajax-method="post"
+              data-ajax-url="/Manufacturers/SearchWithAjax"
+              data-ajax-update="#results"
+              class="d-flex align-items-center tm-mb-big">
+            <input type="text" name="request" class="form-control me-2" placeholder="Поиск..." />
+            <button type="submit" class="btn btn-primary">🔍 Найти</button>
+        </form>
 
-<div id="results">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Address)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.BrandId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.BrandId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.BrandId">Delete</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>
+        <!-- Результаты -->
+        <div id="results" class="tm-product-table-container">
+            <table class="table table-hover tm-product-table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.Description)</th>
+                        <th>@Html.DisplayNameFor(model => model.Address)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.BrandId" class="tm-notification-link">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.BrandId" class="tm-notification-link">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.BrandId" class="tm-notification-link">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
