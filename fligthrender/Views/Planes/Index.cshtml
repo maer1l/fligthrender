@@ -1,73 +1,59 @@
 ﻿@model IEnumerable<fligthrender.Models.Plane>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Planes";
 }
 
-<h1>Index</h1>
+<div class="container tm-mt-big">
+    <div class="tm-block tm-block-products">
+        <h1 class="tm-block-title text-center">@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+        <p class="tm-small">
+            <a asp-action="Create" class="btn btn-primary">Создать новый</a>
+        </p>
 
-<form data-ajax="true" data-ajax-method="post" data-ajax-url="/Planes/SearchWithAjax" data-ajax-update="#results">
-    <input type="text" name="request" placeholder="поиск..."/>
-    <input type="submit" value="🔍" />
-</form>
+        <!-- Поиск -->
+        <form data-ajax="true" data-ajax-method="post"
+              data-ajax-url="/Planes/SearchWithAjax"
+              data-ajax-update="#results"
+              class="d-flex align-items-center tm-mb-big">
+            <input type="text" name="request" class="form-control me-2" placeholder="Поиск..." />
+            <button type="submit" class="btn btn-primary">🔍 Найти</button>
+        </form>
 
-<div id="results">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Speed)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Weight)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Year)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Brand)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Model)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Speed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Weight)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Year)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Brand.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.PlaneId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.PlaneId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.PlaneId">Delete</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>
+        <!-- Результаты -->
+        <div id="results" class="tm-product-table-container">
+            <table class="table table-hover tm-product-table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Model)</th>
+                        <th>@Html.DisplayNameFor(model => model.Speed)</th>
+                        <th>@Html.DisplayNameFor(model => model.Weight)</th>
+                        <th>@Html.DisplayNameFor(model => model.Price)</th>
+                        <th>@Html.DisplayNameFor(model => model.Year)</th>
+                        <th>@Html.DisplayNameFor(model => model.Brand)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Model)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Speed)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Weight)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Year)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Brand.Name)</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.PlaneId" class="tm-notification-link">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.PlaneId" class="tm-notification-link">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.PlaneId" class="tm-notification-link">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

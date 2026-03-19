@@ -4,33 +4,27 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="container tm-mt-big">
+    <div class="tm-block tm-block-settings">
+        <h1 class="tm-block-title text-center">@ViewData["Title"]</h1>
+        <h4 class="tm-small">Manufacturer</h4>
+        <hr />
 
-<div>
-    <h4>Manufacturer</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.BrandId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <dl class="row">
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Name)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Name)</dd>
+
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Description)</dd>
+
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Address)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Address)</dd>
+        </dl>
+
+        <!-- Кнопки действий -->
+        <div class="d-flex justify-content-between tm-mt-big">
+            <a asp-action="Edit" asp-route-id="@Model?.BrandId" class="btn btn-primary">✏️ Edit</a>
+            <a asp-action="Index" class="btn btn-primary">← Back to List</a>
+        </div>
+    </div>
 </div>
