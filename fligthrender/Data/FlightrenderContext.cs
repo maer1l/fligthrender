@@ -20,6 +20,8 @@ public partial class FlightrenderContext : DbContext
 
     public virtual DbSet<Plane> Planes { get; set; }
 
+    public virtual DbSet<Planespicture> Planespictures { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +36,13 @@ public partial class FlightrenderContext : DbContext
             entity.HasKey(e => e.PlaneId).HasName("PK__planes__4D11D7FD8E8E3EE9");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Planes).HasConstraintName("FK_planes_manufacturers");
+        });
+
+        modelBuilder.Entity<Planespicture>(entity =>
+        {
+            entity.HasOne(d => d.Plane).WithMany()
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_planespictures_planes");
         });
 
         OnModelCreatingPartial(modelBuilder);
