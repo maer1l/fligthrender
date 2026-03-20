@@ -1,8 +1,12 @@
 ﻿using fligthrender.Data;
 using fligthrender.Models;
+using fligthrender.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -16,9 +20,15 @@ namespace fligthrender.Controllers
     {
         private readonly FlightrenderContext _context;
 
-        public PlanesController(FlightrenderContext context)
+        private readonly ILogger<HomeController> _logger;
+
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+        public PlanesController(FlightrenderContext context, ILogger<HomeController> logger, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Planes
@@ -71,6 +81,37 @@ namespace fligthrender.Controllers
             return View(plane);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UploadFiles(PlaneWithPhoto model)
+        {
+            // проверка корректности валидации
+            if (ModelState.IsValid)
+            {
+                // перебрать коллекцию полученных файлов
+                foreach (IFormFile file in model.files)
+                {
+                    // проверка наличия файла
+                    if (file != null)
+                    {
+                        var savePath = _hostingEnvironment.WebRootPath + "/Images/" + file.FileName;
+
+                        // сохранение файла
+                        using (var fileStream = new FileStream(savePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        await _context.Database.ExecuteSqlRawAsync($"EXEC nProc @PATH, @PLANEID", new SqlParameter("@PATH", "/Images/" + file.FileName), new SqlParameter("@PLANEID", model.plane.PlaneId));
+
+                        // установка сообщения о загрузке файлов
+                        ViewBag.UploadStatus = model.files.Count().ToString() + " files uploaded successfully.";
+                    }
+                }
+            }
+            return View();
+        }
+
         // GET: Planes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -85,7 +126,8 @@ namespace fligthrender.Controllers
                 return NotFound();
             }
             ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name", plane.BrandId);
-            return View(plane);
+            var vmodel = new PlaneWithPhoto { plane = plane };
+            return View(vmodel);
         }
 
         // POST: Planes/Edit/5
@@ -99,8 +141,6 @@ namespace fligthrender.Controllers
             {
                 return NotFound();
             }
-
-
 
             if (ModelState.IsValid)
             {
@@ -150,14 +190,16 @@ namespace fligthrender.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var plane = await _context.Planes.FindAsync(id);
-            if (plane != null)
+            try
             {
-                _context.Planes.Remove(plane);
-            }
+                await _context.Database.ExecuteSqlRawAsync($"EXEC deletingPlane @PLANEID", new SqlParameter("@PLANEID", id));
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex)
+            {
+                return RedirectToAction(nameof(Delete), new { id });
+            }
         }
 
         private bool PlaneExists(int id)
