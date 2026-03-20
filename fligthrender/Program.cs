@@ -34,7 +34,7 @@ namespace fligthrender
                 app.UseHsts();
             }
 
-            // Scaffold - DbContext "Server=DESKTOP-3OSCRNB\SQLEXPRESS;Database=flightrender;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models - ContextDir Data - Tables planes - DataAnnotations
+            // Scaffold-DbContext "Server=DESKTOP-3OSCRNB\SQLEXPRESS;Database=flightrender;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models - ContextDir Data - Tables planes, manufacturers, planespictures - DataAnnotations --Force
 
             app.UseHttpsRedirection();
             app.UseRouting();

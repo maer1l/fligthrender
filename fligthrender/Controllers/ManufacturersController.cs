@@ -153,7 +153,7 @@ namespace fligthrender.Controllers
 
             int result = (int)resultParam.Value;
 
-            if (result == 1)
+            if (result == 0)
             {
                 TempData["AlertMessage"] = "Нельзя удалить бренд, у него есть связанные самолеты!";
                 return RedirectToAction(nameof(Index));
