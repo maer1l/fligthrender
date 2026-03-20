@@ -1,4 +1,4 @@
-﻿@model fligthrender.Models.Plane
+﻿@model fligthrender.ViewModels.PlaneWithPhoto
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,46 +12,66 @@
 
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="PlaneId" />
+            <input type="hidden" asp-for="plane.PlaneId" />
+            <input type="hidden" name="hid" asp-for="plane.PlaneId" />
 
             <div class="form-group">
-                <label asp-for="Model"></label>
-                <input asp-for="Model" class="form-control" />
-                <span asp-validation-for="Model" class="text-danger"></span>
+                <label asp-for="plane.Model"></label>
+                <input asp-for="plane.Model" class="form-control" />
+                <span asp-validation-for="plane.Model" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Speed"></label>
-                <input asp-for="Speed" class="form-control" />
-                <span asp-validation-for="Speed" class="text-danger"></span>
+                <label asp-for="plane.Speed"></label>
+                <input asp-for="plane.Speed" class="form-control" />
+                <span asp-validation-for="plane.Speed" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Weight"></label>
-                <input asp-for="Weight" class="form-control" />
-                <span asp-validation-for="Weight" class="text-danger"></span>
+                <label asp-for="plane.Weight"></label>
+                <input asp-for="plane.Weight" class="form-control" />
+                <span asp-validation-for="plane.Weight" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Price"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="plane.Price"></label>
+                <input asp-for="plane.Price" class="form-control" />
+                <span asp-validation-for="plane.Price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Year"></label>
-                <input asp-for="Year" class="form-control" />
-                <span asp-validation-for="Year" class="text-danger"></span>
+                <label asp-for="plane.Year"></label>
+                <input asp-for="plane.Year" class="form-control" />
+                <span asp-validation-for="plane.Year" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="BrandId"></label>
-                <select asp-for="BrandId" class="custom-select" asp-items="ViewBag.BrandId"></select>
-                <span asp-validation-for="BrandId" class="text-danger"></span>
+                <label asp-for="plane.BrandId"></label>
+                <select asp-for="plane.BrandId" class="custom-select" asp-items="ViewBag.BrandId"></select>
+                <span asp-validation-for="plane.BrandId" class="text-danger"></span>
             </div>
 
             <div class="form-group tm-mt-small">
-                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <input type="submit" value="Сохранить"/>
+            </div>
+        </form>
+
+        <form id="form" name="form" action="/UploadFiles" enctype="multipart/form-data" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.files, htmlAttributes: new { @class = "control-label" })
+                <input id="files" name="files" type="file" size="1" multiple />
+                @Html.ValidationMessageFor(model => model.files, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <input id="submit" type="submit" value="Upload" class="btn btn-primary" />
+            </div>
+            <div class="form-group">
+                <div class="text-success">
+                    @ViewBag.UploadStatus
+                </div>
             </div>
         </form>
 
@@ -60,6 +80,58 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#submit').click(function (e) {
+
+            // предотвратить отправку формы
+            e.preventDefault();
+
+            //alert('YES');
+
+            var input = document.getElementById('files');
+            var files = input.files;
+
+            // создание контейнера для отправки на сервер
+            var formData = new FormData();
+
+            console.log(files);
+
+            // добавление в контейнер AntiForgeryToken
+            var val = document.getElementsByName("__RequestVerificationToken")[0].value;
+            var planeId = document.getElementsByName("hid")[0].value;
+            console.log(val);
+            formData.append("__RequestVerificationToken", val);
+            formData.append("plane.PlaneId", planeId);
+
+            // добавление выбранных файлов в контейнер
+            for (var i = 0; i != files.length; i++) {
+                formData.append("files", files[i]);
+            }
+
+            // посылка файлов на сервер без перезагрузки страницы
+            $.ajax(
+                {
+                    url: '@Url.Action("UploadFiles", "Planes")',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (data) {
+                        alert("Files Uploaded!");
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                }
+            );
+        });
+    });
+
+</script>
 
 @section Scripts {
     @{
