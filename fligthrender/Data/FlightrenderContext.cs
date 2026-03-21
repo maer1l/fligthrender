@@ -40,6 +40,8 @@ public partial class FlightrenderContext : DbContext
 
         modelBuilder.Entity<Planespicture>(entity =>
         {
+            entity.HasKey(e => new { e.PlaneId, e.Path });
+
             entity.HasOne(d => d.Plane).WithMany()
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_planespictures_planes");

@@ -11,5 +11,7 @@ namespace fligthrender.ViewModels
 
         public Plane plane { get; set; }
 
+        public List<string> paths { get; set; } = new List<string>();
+
     }
 }
