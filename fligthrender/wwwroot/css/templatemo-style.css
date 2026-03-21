@@ -707,3 +707,56 @@ input[type="checkbox"]:focus {
     max-height: 350px;
   }
 }
+
+.custom-carousel-btn {
+    background-color: rgba(0,0,0,0.3);
+    border: none;
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    
+}
+
+    .custom-carousel-btn:hover {
+        background-color: #f5a623;
+    }
+
+.custom-carousel-icon {
+    width: 20px;
+    height: 20px;
+    color: #fff;
+}
+
+.carousel-control-prev.custom-carousel-btn {
+    left: 10px; /* отступ от левого края */
+}
+
+.carousel-control-next.custom-carousel-btn {
+    right: 10px; /* отступ от правого края */
+}
+
+
+    .carousel-indicators [data-bs-target] {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%; /* круглые */
+        background-color: #ccc; /* светло-серый для неактивных */
+        border: none; /* убираем обводку */
+        margin: 0 6px;
+        opacity: 0.6;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-indicators .active {
+        background-color: #f5a623; /* твой фирменный оранжевый */
+        opacity: 1;
+        transform: scale(1.2); /* чуть больше активная точка */
+    }

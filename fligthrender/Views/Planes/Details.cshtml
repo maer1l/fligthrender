@@ -1,4 +1,4 @@
-﻿@model fligthrender.Models.Plane
+﻿@model fligthrender.ViewModels.PlaneWithPhoto
 
 @{
     ViewData["Title"] = "Details";
@@ -7,31 +7,72 @@
 <div class="container tm-mt-big">
     <div class="tm-block tm-block-settings">
         <h1 class="tm-block-title text-center">@ViewData["Title"]</h1>
-        <h4 class="tm-small">Plane</h4>
+        @if (Model.paths != null && Model.paths.Any())
+        {
+            <h4 class="tm-block-title">Photo</h4>
+            <div id="planeCarousel" class="carousel slide tm-mt-small" data-bs-ride="carousel">
+                <div class="carousel-inner" style="height:500px;">
+                    @for (int i = 0; i < Model.paths.Count; i++)
+                    {
+                        var path = Model.paths[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@path" class="d-block w-100"
+                                 alt="Plane photo"
+                                 style="height:500px; object-fit:cover;" />
+                        </div>
+                    }
+                </div>
+
+
+                <button class="carousel-control-prev custom-carousel-btn" type="button" data-bs-target="#planeCarousel" data-bs-slide="prev">
+                    <svg class="custom-carousel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path fill="currentColor" d="M11 1L3 8l8 7V1z" />
+                    </svg>
+                </button>
+                <button class="carousel-control-next custom-carousel-btn" type="button" data-bs-target="#planeCarousel" data-bs-slide="next">
+                    <svg class="custom-carousel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path fill="currentColor" d="M5 1l8 7-8 7V1z" />
+                    </svg>
+                </button>
+
+
+                <div class="carousel-indicators">
+                    @for (int i = 0; i < Model.paths.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#planeCarousel" data-bs-slide-to="@i"
+                                class="@(i == 0 ? "active" : "")"></button>
+                    }
+                </div>
+            </div>
+
+        }
+        
         <hr />
 
+        <h4 class="tm-block-title">Plane</h4>
+
         <dl class="row tm-list">
-            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Model)</dt>
-            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Model)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Model)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Model)</dd>
 
-            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Speed)</dt>
-            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Speed)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Speed)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Speed)</dd>
 
-            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Weight)</dt>
-            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Weight)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Weight)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Weight)</dd>
 
-            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
-            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Price)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Price)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Price)</dd>
 
-            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Year)</dt>
-            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Year)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Year)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Year)</dd>
 
-            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Brand)</dt>
-            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.Brand.BrandId)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Brand)</dt>
+            <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Brand.BrandId)</dd>
         </dl>
 
         <div class="d-flex justify-content-between tm-mt-big">
-            <a asp-action="Edit" asp-route-id="@Model?.PlaneId" class="btn btn-primary">✏️ Edit</a>
+            <a asp-action="Edit" asp-route-id="@Model?.plane.PlaneId" class="btn btn-primary">✏️ Edit</a>
             <a asp-action="Index" class="btn btn-primary">← Back to List</a>
         </div>
     </div>

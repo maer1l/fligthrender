@@ -4,6 +4,7 @@ using fligthrender.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Microsoft.CodeAnalysis.Elfie.Model.Tree;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace fligthrender.Controllers
@@ -54,7 +56,23 @@ namespace fligthrender.Controllers
                 return NotFound();
             }
 
-            return View(plane);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vmodel = new PlaneWithPhoto { plane = plane };
+
+
+            var paths = _context.Planespictures
+                                .Where(p => p.PlaneId == id)
+                                .Select(p => p.Path)
+                                .ToList();
+
+
+            vmodel.paths.AddRange(paths);
+
+            return View(vmodel);
         }
 
         // GET: Planes/Create
@@ -85,6 +103,7 @@ namespace fligthrender.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UploadFiles(PlaneWithPhoto model)
         {
+            
             // проверка корректности валидации
             if (ModelState.IsValid)
             {
@@ -106,10 +125,25 @@ namespace fligthrender.Controllers
 
                         // установка сообщения о загрузке файлов
                         ViewBag.UploadStatus = model.files.Count().ToString() + " files uploaded successfully.";
+
+                        
+
+                        
                     }
                 }
             }
-            return View();
+
+            var paths = _context.Planespictures
+                                .Where(p => p.PlaneId == model.plane.PlaneId)
+                                .Select(p => p.Path)
+                                .ToList();
+
+            var result = Json(paths, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = null
+            });
+
+            return result;
         }
 
         // GET: Planes/Edit/5
@@ -127,6 +161,16 @@ namespace fligthrender.Controllers
             }
             ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name", plane.BrandId);
             var vmodel = new PlaneWithPhoto { plane = plane };
+
+            
+            var paths = _context.Planespictures
+                                .Where(p => p.PlaneId == id)
+                                .Select(p => p.Path)
+                                .ToList();
+
+            
+            vmodel.paths.AddRange(paths);
+
             return View(vmodel);
         }
 
@@ -265,6 +309,22 @@ namespace fligthrender.Controllers
             int id = brands.SingleOrDefault(m => m.Name == Brand).BrandId;
             var filteredplanes = from p in planes where p.BrandId == id select p;
             return View("Index", filteredplanes);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePhoto(string photoPath, int planeId)
+        {
+            var photo = _context.Planespictures
+                                .FirstOrDefault(p => p.PlaneId == planeId && p.Path == photoPath);
+
+            if (photo != null)
+            {
+                _context.Planespictures.Remove(photo);
+                _context.SaveChanges();
+            }
+
+            return Json(new { success = true, photoPath });
         }
     }
 }
