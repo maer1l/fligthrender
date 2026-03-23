@@ -10,8 +10,10 @@
         <h4 class="tm-small">Plane</h4>
         <hr />
 
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form id="validForm" asp-action="" method="post">
+            @Html.ValidationSummary(true, "Please fix the following errors!")
+
+            @Html.AntiForgeryToken()
 
             <div class="form-group">
                 <label asp-for="Model"></label>
@@ -57,6 +59,83 @@
         </form>
     </div>
 </div>
+
+<script>
+
+    function ProcessResult(data) {
+        console.log(data);
+
+        // скрыть все ошибки, показанные на предыдущем шаге валидации
+        $("input").removeClass('input-validation-error');
+        $("select").removeClass('input-validation-error');
+        $("span[data-valmsg-for]").removeClass('field-validation-error');
+        $("span[data-valmsg-for]").addClass('field-validation-valid');
+        $("span[data-valmsg-for]").text("");
+
+        if (data.success == false) {
+            //alert("400")
+
+            // перебрать все полученные ошибки валидации
+            $.each(data.errors, function (key, value) {
+                //console.log(key);
+                console.log(value.key);
+                console.log(value.errors[0]);
+
+                // выделить текстовое поле с ошибкой
+                var filter = "input[name='" + value.key + "']";
+                $(filter).addClass('input-validation-error');
+
+                // показать сообщение об ошибке для каждого текстового поля с ошибкой
+                var validationMessageElement = $('span[data-valmsg-for="' + value.key + '"]');
+                validationMessageElement.removeClass('field-validation-valid');
+                validationMessageElement.addClass('field-validation-error');
+                validationMessageElement.text(value.errors[0]);
+
+                console.log('span[data-valmsg-for="' + value.key + '"]');
+            });
+        }
+        else
+        {
+            alert("Success");
+            window.location.href = 'https://localhost:7124/Planes';
+        }
+    }
+
+    $('#validForm').submit(function (e) {
+
+        e.preventDefault();
+
+        //alert("send");
+
+        var form = $(this);
+
+        // подача Ajax-запроса на сервер при помощи JQuery
+        $.ajax({
+            url: '@Url.Action("Save2", "Planes")',
+            method: "POST",
+            data: JSON.stringify({
+                PlaneId: $('#PlaneId').val() == "" ? null : $('#PlaneId').val(),
+                Model: $('#Model').val() == "" ? null : $('#Model').val(),
+                Speed: $('#Speed').val() == "" ? null : $('#Speed').val(),
+                Weight: $('#Weight').val() == "" ? null : $('#Weight').val(),
+                Price: $('#Price').val() == "" ? null : $('#Price').val(),
+                Year: $('#Year').val() == "" ? null : $('#Year').val(),
+                BrandId: $('#BrandId').val() == "" ? null : $('#BrandId').val()
+            }),
+            dataType: 'JSON',
+            contentType: 'application/json',
+            cache: false,
+            processData: false,
+            success: function (data) {
+                ProcessResult(data);
+            },
+            error: function (data) {
+                alert("OnError!!!");
+            }
+        })
+    });
+
+</script>
 
 @section Scripts {
     @{

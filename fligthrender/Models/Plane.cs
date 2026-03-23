@@ -16,21 +16,27 @@ public partial class Plane
     [Column("model")]
     [StringLength(50)]
     [Unicode(false)]
+    [Required(ErrorMessage = "Please enter plane's model.")]
     public string? Model { get; set; }
 
     [Column("speed")]
+    [Required(ErrorMessage = "Please enter plane's speed.")]
     public int? Speed { get; set; }
 
     [Column("weight")]
+    [Required(ErrorMessage = "Please enter plane's weight.")]
     public float? Weight { get; set; }
 
     [Column("price", TypeName = "money")]
+    [Required(ErrorMessage = "Please enter plane's price.")]
     public decimal? Price { get; set; }
 
     [Column("year")]
+    [Required(ErrorMessage = "Please enter plane's year of manufactured.")]
     public int? Year { get; set; }
 
     [Column("brand_id")]
+    [Required(ErrorMessage = "Please enter plane's brand.")]
     public int? BrandId { get; set; }
 
     [ForeignKey("BrandId")]

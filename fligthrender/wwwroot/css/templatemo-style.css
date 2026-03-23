@@ -760,3 +760,15 @@ input[type="checkbox"]:focus {
         opacity: 1;
         transform: scale(1.2); /* чуть больше активная точка */
     }
+
+.field-validation-error {
+    color: red;
+}
+
+.input-validation-error {
+    border: 2px solid red;
+    background-color: antiquewhite;
+}
+
+.validation-summary-errors {
+    color: red;

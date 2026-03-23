@@ -1,6 +1,7 @@
 ﻿using fligthrender.Data;
 using fligthrender.Models;
 using fligthrender.ViewModels;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace fligthrender.Controllers
 {
@@ -97,6 +99,33 @@ namespace fligthrender.Controllers
             }
             ViewData["BrandId"] = new SelectList(_context.Manufacturers, "BrandId", "Name", plane.BrandId);
             return View(plane);
+        }
+
+        // валидация JQuery Ajax
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Save2([FromBody] Plane plane)
+        {
+            // если форма не валидна
+            if (!ModelState.IsValid)
+            {
+                var errorModel =
+                        from x in ModelState.Keys
+                        where ModelState[x].Errors.Count > 0
+                        select new
+                        {
+                            key = x,
+                            errors = ModelState[x].Errors.Select(y => y.ErrorMessage).ToArray()
+                        };
+
+                return Json(new { success = false, errors = errorModel });
+            }
+            else
+            {
+                _context.Add(plane);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Validation successfull" });
+            }
         }
 
         [HttpPost]
