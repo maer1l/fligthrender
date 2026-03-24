@@ -15,15 +15,18 @@ public partial class Manufacturer
 
     [Column("name")]
     [StringLength(50)]
+    [Required(ErrorMessage = "Please enter name's manufacturer.")]
     [Unicode(false)]
     public string? Name { get; set; }
 
     [Column("description")]
+    [Required(ErrorMessage = "Please enter description manufacturer.")]
     [Unicode(false)]
     public string? Description { get; set; }
 
     [Column("address")]
     [StringLength(50)]
+    [Required(ErrorMessage = "Please enter address manufacturer.")]
     [Unicode(false)]
     public string? Address { get; set; }
 
