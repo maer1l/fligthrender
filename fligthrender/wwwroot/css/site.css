@@ -41,3 +41,11 @@ body {
 
 .validation-summary-errors {
     color: red;
+
+.active{
+    display: inline;
+}
+
+.hidden{
+    display: none;
+}

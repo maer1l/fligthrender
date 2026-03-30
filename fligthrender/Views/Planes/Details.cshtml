@@ -10,7 +10,7 @@
         @if (Model.paths != null && Model.paths.Any())
         {
             <h4 class="tm-block-title">Photo</h4>
-            <div id="planeCarousel" class="carousel slide tm-mt-small" data-bs-ride="carousel">
+            <!--<div id="planeCarousel" class="carousel slide tm-mt-small" data-bs-ride="carousel">
                 <div class="carousel-inner" style="height:500px;">
                     @for (int i = 0; i < Model.paths.Count; i++)
                     {
@@ -43,8 +43,9 @@
                                 class="@(i == 0 ? "active" : "")"></button>
                     }
                 </div>
-            </div>
+            </div>-->
 
+            <carousel plane="@Model"/>
         }
         
         <hr />
