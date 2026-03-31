@@ -1,16 +1,51 @@
-﻿@{
+﻿@model fligthrender.ViewModels.PlaneWithPhoto
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container tm-mt-big">
-    <div class="tm-block text-center">
-        <h1 class="tm-block-title">Добро пожаловать</h1>
-        <p class="tm-small">
-            Узнайте больше о
-            <a class="tm-notification-link" href="https://learn.microsoft.com/aspnet/core">
-                создании веб‑приложений на ASP.NET Core
-            </a>.
-        </p>
+<div class="container tm-mt-big" >
+    <div class="tm-block text-center" style="min-height: 100vh;">
+
+        <h3 class="text-white" >Favorit Plane</h3>
+
+        <div class="row">
+
+            <div class="col-md-8 d-flex">
+           
+                <div class="flex-fill">
+                    
+                    <images-plane path="Model.paths"></images-plane>
+
+            
+                </div>
+            </div>
+
+        
+            <div class="col-md-4">
+                <dl class="row tm-list">
+                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Model)</dt>
+                    <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Model)</dd>
+
+                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Speed)</dt>
+                    <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Speed)</dd>
+
+                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Weight)</dt>
+                    <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Weight)</dd>
+
+                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Price)</dt>
+                    <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Price)</dd>
+
+                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Year)</dt>
+                    <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Year)</dd>
+
+                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.plane.Brand)</dt>
+                    <dd class="col-sm-10 tm-text-color-secondary">@Html.DisplayFor(model => model.plane.Brand.Name)</dd>
+                </dl>
+            </div>
+
+        </div>
+        
     </div>
 </div>
 
