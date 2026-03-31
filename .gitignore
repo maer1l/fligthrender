@@ -56,3 +56,4 @@ nunit-*.xml
 /.vs
 /fligthrender/bin
 /fligthrender/obj
+/fligthrender/wwwroot/Images
