@@ -773,10 +773,11 @@ input[type="checkbox"]:focus {
 .validation-summary-errors {
     color: red;
 
-.active{
+/*.active{
     display: inline;
 }
 
 .hidden{
     display: none;
 }
+*/

@@ -42,10 +42,10 @@ body {
 .validation-summary-errors {
     color: red;
 
-.active{
+/*.active{
     display: inline;
 }
 
 .hidden{
     display: none;
-}
+}*/
