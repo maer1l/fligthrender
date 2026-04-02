@@ -1,4 +1,8 @@
+using CoreMVC_Identity.Services;
+using fligthrender.Areas.Identity.Data;
 using fligthrender.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -15,6 +19,48 @@ namespace fligthrender
 
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<FlightrenderContext>(options => options.UseSqlServer(connection));
+
+            builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(connection));
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ClaimPolicy", policy =>
+                {
+                    policy.RequireClaim("Position", "Admin");
+                    policy.RequireRole("Admin");
+                });
+            });
+
+            //builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityDBContext>();
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+                .AddEntityFrameworkStores<IdentityDBContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+            // указание адреса страниц login, logout, accessdenied для сайта, нужно для правильной работы [Authorize]
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+
+            builder.Services.AddRazorPages();
+
+            builder.Services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+            });
 
             var app = builder.Build();
 
@@ -39,7 +85,10 @@ namespace fligthrender
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
