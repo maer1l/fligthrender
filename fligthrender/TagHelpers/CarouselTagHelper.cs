@@ -10,7 +10,7 @@ namespace fligthrender.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
-            output.Attributes.SetAttribute("style", $"position: relative; width: 50%; height: 500px;");
+            output.Attributes.SetAttribute("style", $"position: relative; width: 100%; height: 500px; display: flex; flex-direction: row;");
             output.TagMode = TagMode.StartTagAndEndTag;
             output.Content.AppendHtml(@"
             <style>
@@ -20,6 +20,14 @@ namespace fligthrender.TagHelpers
 
                 .hidden{
                     display: none;
+                }
+
+                .carousel-btn{
+                    border: none;
+                    border-radius: 50%;
+                    width: 35px;
+                    height: 35px;
+                    text-align: center;
                 }
             </style>
 
@@ -48,16 +56,28 @@ namespace fligthrender.TagHelpers
                 }
             </script>
             ");
-
+            output.Content.AppendHtml(@"
+                <div style='flex: 1;'>
+                    <button class='carousel-btn' onclick='nextImg()' style='position: absolute; top: 50%; right: 3%;'>▶</button>
+                </div>
+            ");
+            output.Content.AppendHtml("<div style='display: flex; flex-direction: column; flex: 2; justify-content: center; align-items: center;'>");
             for (int i = 0; i < paths.Count(); i++)
             {
                 string className = i == 0 ? "img active" : "img hidden";
-                output.Content.AppendHtml($"<img src='{paths[i]}' name='{Path.GetFileNameWithoutExtension(paths[i])}' class='{className}' style=\"width: 100%; height: 500px; object-fit: cover;\"/>");
+                output.Content.AppendHtml($"<img src='{paths[i]}' name='{Path.GetFileNameWithoutExtension(paths[i])}' class='{className}' style=\"height: 100%;\"/>");
             }
+            output.Content.AppendHtml("</div>");
+
             output.Content.AppendHtml(@"
-                <button onclick='nextImg()' style='position: absolute; top: 50%; right: 0%;'>▶</button>
-                <button onclick='prevImg()' style='position: absolute; top: 50%; left: 0%;'>◀</button>
+                <div style='flex: 1;'>
+                    <button class='carousel-btn' onclick='prevImg()' style='position: absolute; top: 50%; left: 3%;'>◀</button>
+                </div>
             ");
+            //output.Content.AppendHtml(@"
+            //    <button class='carousel-btn' onclick='nextImg()' style='position: absolute; top: 50%; right: 3%;'>▶</button>
+            //    <button class='carousel-btn' onclick='prevImg()' style='position: absolute; top: 50%; left: 3%;'>◀</button>
+            //");
         }
     }
 }

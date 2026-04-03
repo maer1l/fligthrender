@@ -132,33 +132,24 @@ namespace fligthrender.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UploadFiles(PlaneWithPhoto model)
         {
-            
-            // проверка корректности валидации
-            if (ModelState.IsValid)
+            // перебрать коллекцию полученных файлов
+            foreach (IFormFile file in model.files)
             {
-                // перебрать коллекцию полученных файлов
-                foreach (IFormFile file in model.files)
+                // проверка наличия файла
+                if (file != null)
                 {
-                    // проверка наличия файла
-                    if (file != null)
+                    var savePath = _hostingEnvironment.WebRootPath + "/Images/" + file.FileName;
+
+                    // сохранение файла
+                    using (var fileStream = new FileStream(savePath, FileMode.Create))
                     {
-                        var savePath = _hostingEnvironment.WebRootPath + "/Images/" + file.FileName;
-
-                        // сохранение файла
-                        using (var fileStream = new FileStream(savePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-
-                        await _context.Database.ExecuteSqlRawAsync($"EXEC nProc @PATH, @PLANEID", new SqlParameter("@PATH", "/Images/" + file.FileName), new SqlParameter("@PLANEID", model.plane.PlaneId));
-
-                        // установка сообщения о загрузке файлов
-                        ViewBag.UploadStatus = model.files.Count().ToString() + " files uploaded successfully.";
-
-                        
-
-                        
+                        await file.CopyToAsync(fileStream);
                     }
+
+                    await _context.Database.ExecuteSqlRawAsync($"EXEC nProc @PATH, @PLANEID", new SqlParameter("@PATH", "/Images/" + file.FileName), new SqlParameter("@PLANEID", model.plane.PlaneId));
+
+                    // установка сообщения о загрузке файлов
+                    ViewBag.UploadStatus = model.files.Count().ToString() + " files uploaded successfully.";
                 }
             }
 
